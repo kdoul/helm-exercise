@@ -7,7 +7,6 @@ keycloak:
   enabled: true
   image: "bitnami/keycloak:latest"
   secretName: "database-credentials"
-  realmFile: "config/realm.json"
   replicaCount: 1
   ingress:
     enabled: true

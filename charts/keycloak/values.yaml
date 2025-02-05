@@ -6,6 +6,5 @@ ingress:
   enabled: true
   hostname: "keycloak.local"
 postgresqlHost: "postgres.local"
-realmFile: "config/realm.json"
 cpuRequest: 100m
 memoryRequest: 100Mi

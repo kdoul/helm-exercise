@@ -5,15 +5,15 @@ This Helm chart deploys four main components into a Kubernetes cluster:
 1. **Keycloak** – An Identity and Access Management (IAM) server  
 2. **PostgreSQL** – A database used by Keycloak to store realms, users, and other data  
 3. **PGAdmin** – A database management UI for the same PostgreSQL instance  
-4. **Angular Website** – A web application that is rebuilt on container startup, allowing you to override `environment.ts` at deploy time
+4. **Angular Website** – A web application that authenticates against Keycloak
 
 ---
 
 ## Architecture
 
 1. **Keycloak** connects to **PostgreSQL** using credentials from a shared secret (e.g., `DB_ADDR`, `DB_USER`, `DB_PASSWORD`).  
-2. **PGAdmin** can manage that same **PostgreSQL** instance, though it is *not* automatically configured; you must manually add the server in the UI.  
-3. **Angular Website** mounts a **ConfigMap-based** `environment.ts` into the container *before* running the Angular build, allowing dynamic environment variables (e.g., Keycloak authority/client) **without** rebuilding the Docker image.
+2. **PGAdmin** can manage that same **PostgreSQL** instance, and it has been pre-configured to access it.  
+3. **Angular Website** is a simple app that authenticates against **Keycloak**.
 
 ---
 
@@ -29,8 +29,8 @@ If you’re deploying locally (e.g., with Minikube or Kind), ensure you can load
 
 ## Installation
 
-1. **Build/Push Docker Image** (if needed):
-
+1. **Build/Push the web app image** (if needed):
+Clone the web app git repository and build the Docker image:
    ```bash
    docker build -t tributech-ui-oauth-sample:latest .
    # Optional: minikube image load tributech-ui-oauth-sample:latest
