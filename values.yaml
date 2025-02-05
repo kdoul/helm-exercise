@@ -1,0 +1,69 @@
+globalDatabase:
+  username: "default"
+  password: "defaultPassword"
+  database: "keycloakdb"
+
+keycloak:
+  image: "bitnami/keycloak:latest"
+  secretName: "database-credentials"
+  replicaCount: 1
+  ingress:
+    enabled: true
+    hostname: "keycloak.local"
+  auth:
+    adminUser: "admin"
+    adminPassword: "adminpassword"
+  postgresqlHost: "postgresql.default.svc.cluster.local"
+
+postgresql:
+  image: "bitnami/postgresql:latest"
+  secretName: "database-credentials"
+  replicaCount: 1
+  persistence:
+    enabled: false
+    storageClass: ""
+    accessMode: "ReadWriteOnce"
+    size: "1Gi"
+
+pgadmin:
+  image: "dpage/pgadmin4:latest"
+  replicaCount: 1
+  ingress:
+    enabled: true
+    hostname: "pgadmin.local"
+  admin:
+    email: "admin@example.com"
+    password: "adminpassword"
+  serverJson: |
+    {
+      "Servers": {
+        "1": {
+          "Name": "PostgreSQL1",
+          "Group": "Server Group 1",
+          "Port": 5432,
+          "Username": "keycloak",
+          "Host": "postgresql.default.svc.cluster.local",
+          "SSLMode": "disable",
+          "MaintenanceDB": "postgres"
+        }
+      }
+    }
+
+
+website:
+  image: "tributech-ui-oauth-sample:latest"
+  replicaCount: 1
+  ingress:
+    enabled: true
+  hostname: "website.local"
+
+  environmentTs: |
+    export const SAMPLE_ENVIRONMENT = {
+      production: false,
+      auth: {
+        authority: 'https://keycloak.local/realms/master',
+        clientId: 'angular',
+      },
+    };
+
+  extraEnv: {}

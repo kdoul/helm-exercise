@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+    spec:
+      volumes:
+        - name: environment-ts
+          configMap:
+            name: {{ .Chart.Name }}-env
+            items:
+              - key: environment.ts
+                path: environment.ts
+      containers:
+      - name: website
+        imagePullPolicy: Never
+        image: "{{ .Values.image }}"
+        volumeMounts:
+          - name: environment-ts
+            mountPath: /usr/src/app/src/environments/environment.ts
+            subPath: environment.ts
+
+        env:
+        {{- range $key, $value := .Values.extraEnv }}
+          - name: {{ $key }}
+            value: "{{ $value }}"
+        {{- end }}
+
+        ports:
+          - name: https
+            containerPort: 4200
+
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 4200
+            scheme: HTTPS
+          initialDelaySeconds: 5
+          periodSeconds: 10
+
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 4200
+            scheme: HTTPS
+          initialDelaySeconds: 5
+          periodSeconds: 5

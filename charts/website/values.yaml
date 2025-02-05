@@ -1,0 +1,16 @@
+image: "tributech-ui-oauth-sample:latest"
+replicaCount: 1
+ingress:
+  enabled: true
+  hostname: "website.local"
+
+environmentTs: |
+  export const environment = {
+    production: true,
+    auth: {
+      authority: 'https://auth.dev-x.tributech-node.com/realms/node',
+      clientId: 'dataspace-admin',
+    },
+  };
+
+extraEnv: {}

@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+    spec:
+      volumes:
+        - name: server-json
+          configMap:
+            name: {{ .Chart.Name }}-env
+            items:
+              - key: server.json
+                path: server.json
+      containers:
+      - name: pgadmin
+        image: "{{ .Values.image }}"
+        volumeMounts:
+          - name: server-json
+            mountPath: /pgadmin4/servers.json
+            subPath: server.json
+
+        env:
+          - name: PGADMIN_DEFAULT_EMAIL
+            value: {{ .Values.admin.email | quote }}
+          - name: PGADMIN_DEFAULT_PASSWORD
+            value: {{ .Values.admin.password | quote }}
+        ports:
+          - name: http
+            containerPort: 80
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10

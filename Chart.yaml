@@ -1,0 +1,4 @@
+apiVersion: v2
+name: my-umbrella-chart
+description: "Umbrella chart deploying Keycloak, PostgreSQL, PGAdmin, and Angular Website with environment.ts override"
+version: 1.2.0

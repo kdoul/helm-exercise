@@ -1,0 +1,8 @@
+image: "bitnami/postgresql:latest"
+secretName: "postgres-secret"
+replicaCount: 1
+persistence:
+  enabled: false
+  storageClass: ""
+  accessMode: "ReadWriteOnce"
+  size: "1Gi"

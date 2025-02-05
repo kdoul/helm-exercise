@@ -1,0 +1,23 @@
+image: "dpage/pgadmin4:latest"
+replicaCount: 1
+ingress:
+  enabled: true
+  hostname: "pgadmin.local"
+admin:
+  email: "admin@example.com"
+  password: "adminpassword"
+
+serverJson: |
+  {
+    "Servers": {
+      "1": {
+        "Name": "Postgres,
+        "Group": "Default Server Group",
+        "Port": 5432,
+        "Username": "postgres",
+        "Host": "localhost",
+        "SSLMode": "prefer",
+        "MaintenanceDB": "postgres"
+      }
+    }
+  }
