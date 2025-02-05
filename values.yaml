@@ -27,6 +27,7 @@ postgresql:
 
 pgadmin:
   image: "dpage/pgadmin4:latest"
+  secretName: "pgadmin-credentials"
   replicaCount: 1
   ingress:
     enabled: true

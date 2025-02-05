@@ -31,9 +31,15 @@ spec:
 
         env:
           - name: PGADMIN_DEFAULT_EMAIL
-            value: {{ .Values.admin.email | quote }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.secretName }}
+                key: username
           - name: PGADMIN_DEFAULT_PASSWORD
-            value: {{ .Values.admin.password | quote }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.secretName }}
+                key: password
         ports:
           - name: http
             containerPort: 80

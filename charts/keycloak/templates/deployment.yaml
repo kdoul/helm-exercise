@@ -29,17 +29,17 @@ spec:
           - name: DB_DATABASE
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.secretName }}-db-secret
+                name: {{ .Values.secretName }}
                 key: database
           - name: DB_USER
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.secretName }}-db-secret
+                name: {{ .Values.secretName }}
                 key: username
           - name: DB_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.secretName }}-db-secret
+                name: {{ .Values.secretName }}
                 key: password
         ports:
           - name: http

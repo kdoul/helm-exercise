@@ -4,7 +4,4 @@ replicaCount: 1
 ingress:
   enabled: true
   hostname: "keycloak.local"
-auth:
-  adminUser: "admin"
-  adminPassword: "adminpassword"
 postgresqlHost: "postgres.local"
