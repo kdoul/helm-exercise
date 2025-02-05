@@ -24,6 +24,7 @@ This Helm chart deploys four main components into a Kubernetes cluster:
 - **Docker** (or another container runtime) if you need to build/push images locally  
 
 If you’re deploying locally (e.g., with Minikube or Kind), ensure you can load or pull the necessary images into your cluster.
+Also, it's assumed there is an NGINX Ingress Controller configured for your cluster with the "nginx" ingress class. 
 
 ---
 
@@ -38,16 +39,49 @@ Clone the web app git repository and build the Docker image:
    ```
    
 2. **Clone or copy this Helm chart folder to your local machine.**
-3.	**Install with Helm:**  
+3. **Install with Helm:**  
 
    ```bash
    helm upgrade --install my-app ./my-umbrella-chart
    ```
 
-By default, the following happen:
+By default, the following will happen:
 	* Keycloak (with admin credentials from values.yaml) is connected to PostgreSQL (using the same secret-based credentials).
-	* PGAdmin is available for managing the same PostgreSQL instance (manual server entry).
-	* Website is an Angular app that compiles on container startup, using a default environment.ts.
+	* PGAdmin is available for managing the same PostgreSQL instance.
+	* Website starts up and is available to log in. 
+ 4. **Import client configuration to Keycloak**
+ Before logging in to the application, you need to import the client configuration for the angular website. 
+ First, navigate to https://keycloak.local and accept the self-signed certificate. 
+ Then, log in using the default credentials: 
+ ```
+ username: user
+ password: bitnami
+ ```
+<img width="1518" alt="Screenshot 2025-02-06 at 00 19 26" src="https://github.com/user-attachments/assets/aed09a9c-7f11-4070-8841-91ef41f02d48" />
+ The admin dashboard will now load. From there, select Realm Settings from the left and then select Partial Import from the action menu on the top right. 
+ <img width="1518" alt="Screenshot 2025-02-06 at 00 19 49" src="https://github.com/user-attachments/assets/458276dc-ed5b-4fb9-9418-0f56ea0520fd" />
+Then select the file config/realm.json from this repo. 
+<img width="1518" alt="Screenshot 2025-02-06 at 00 20 05" src="https://github.com/user-attachments/assets/196142f1-5ae2-4a89-b9f2-3d23c800dc07" />
+Then, select the checkbox "7 Clients" and from the dropdown select "Skip" before clicking import. 
+If all goes well, you will see the import success window. You can now close this window. 
+ <img width="1518" alt="Screenshot 2025-02-06 at 00 20 25" src="https://github.com/user-attachments/assets/d3387580-0dfb-47b4-9864-ff2933afcb13" />
+
+ Now, you can login to the website using the default user. First, navigate to https://website.local/ which should immediately redirect you to the Keycloak sign-in page.
+ <img width="1201" alt="Screenshot 2025-02-06 at 00 22 07" src="https://github.com/user-attachments/assets/e3a3c51c-64f0-4d06-960c-f910ba44b93b" />
+Then, you should see this window with the note: isAuthenticated: true. 
+ <img width="1201" alt="Screenshot 2025-02-06 at 00 22 13" src="https://github.com/user-attachments/assets/ed8444aa-e00e-41f9-ad57-fb4828092ad2" />
+
+The Helm chart will deploy all the necessary components. Here are some screenshots from the K9s utility, showing the various deployed resources:
+<img width="1256" alt="Screenshot 2025-02-06 at 00 16 55" src="https://github.com/user-attachments/assets/d96689c4-d86a-475e-8eca-33b40675333c" />
+**Pods**
+<img width="1256" alt="Screenshot 2025-02-06 at 00 17 29" src="https://github.com/user-attachments/assets/c1474612-09d2-46ce-8ed3-ed5536d6f78f" />
+**Services**
+<img width="1256" alt="Screenshot 2025-02-06 at 00 17 19" src="https://github.com/user-attachments/assets/c50c7bc0-e366-4e19-9ccf-79ca827ee041" />
+**Persistent Volume Claims**
+<img width="1256" alt="Screenshot 2025-02-06 at 00 17 12" src="https://github.com/user-attachments/assets/6be855f7-6388-40bb-a950-19ff29d98603" />
+**Deployments**
+<img width="1256" alt="Screenshot 2025-02-06 at 00 17 04" src="https://github.com/user-attachments/assets/aa78937d-4747-4e6a-aad0-da9ee512021e" />
+**Ingresses**
 
 ## Configuration
 
