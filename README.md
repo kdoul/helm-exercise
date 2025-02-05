@@ -64,7 +64,7 @@ globalDatabase:
 
 These are stored in a Kubernetes Secret named <release>-db-secret. Keycloak reads them at startup to connect to PostgreSQL.
 
-###Keycloak
+### Keycloak
 * Chart: charts/keycloak/
 * Key Settings (e.g., values.yaml):
 ```yaml
@@ -72,12 +72,12 @@ keycloak:
   image: "bitnami/keycloak:latest"
   postgresqlHost: "my-umbrella-chart-postgresql"
   auth:
-	adminUser: "admin"
-	adminPassword: "adminpassword"
+   adminUser: "admin"
+   adminPassword: "adminpassword"
 ```
 * Environment variables for DB credentials come from the secret db-secret.
 
-###PostgreSQL
+### PostgreSQL
 * Chart: charts/postgresql/
 * Optional Persistence: Enabled by default; controlled by setting:
 ```yaml
@@ -89,7 +89,7 @@ postgresql:
 ```
 * Service Name is typically <release>-postgresql. Keycloak’s postgresqlHost references this service.
 
-###PGAdmin
+### PGAdmin
 * Chart: charts/pgadmin/
 * Manual connection to the same Postgres server:
 	1. Go to http://pgadmin.local
@@ -101,7 +101,7 @@ postgresql:
 * Password: keycloakpassword
 * Database: keycloakdb (optional)
 
-###Angular Website
+### Angular Website
 * Chart: charts/website/
 * environment.ts is stored as a multiline string in values.yaml:
 ```yaml
@@ -140,7 +140,7 @@ helm upgrade --install my-app ./my-umbrella-chart \
 	* PGAdmin: http://pgadmin.local
 	* Website: https://website.local
 
-##Testing
+## Testing
 
 This chart includes a helm test Pod that curls Keycloak and the Website:
 ```sh
@@ -148,7 +148,7 @@ helm test my-app
 ```
 If both return 200 OK, you’ll see “All tests passed!”.
 
-##Uninstalling
+## Uninstalling
 ```sh
 helm uninstall my-app
 ```
