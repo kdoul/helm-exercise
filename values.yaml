@@ -4,8 +4,10 @@ globalDatabase:
   database: "keycloakdb"
 
 keycloak:
+  enabled: true
   image: "bitnami/keycloak:latest"
   secretName: "database-credentials"
+  realmFile: "config/realm.json"
   replicaCount: 1
   ingress:
     enabled: true
@@ -16,16 +18,18 @@ keycloak:
   postgresqlHost: "postgresql.default.svc.cluster.local"
 
 postgresql:
+  enabled: true
   image: "bitnami/postgresql:latest"
   secretName: "database-credentials"
   replicaCount: 1
   persistence:
-    enabled: false
-    storageClass: ""
+    enabled: true
     accessMode: "ReadWriteOnce"
+    storageClass: ""
     size: "1Gi"
 
 pgadmin:
+  enabled: true
   image: "dpage/pgadmin4:latest"
   secretName: "pgadmin-credentials"
   replicaCount: 1
@@ -52,6 +56,7 @@ pgadmin:
 
 
 website:
+  enabled: true
   image: "tributech-ui-oauth-sample:latest"
   replicaCount: 1
   ingress:

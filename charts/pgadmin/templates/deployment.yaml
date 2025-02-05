@@ -28,7 +28,10 @@ spec:
           - name: server-json
             mountPath: /pgadmin4/servers.json
             subPath: server.json
-
+        resources:
+          requests:
+            memory: {{ .Values.memoryRequest }}
+            cpu: {{ .Values.cpuRequest }}
         env:
           - name: PGADMIN_DEFAULT_EMAIL
             valueFrom:

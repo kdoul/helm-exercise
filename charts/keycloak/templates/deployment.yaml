@@ -14,16 +14,33 @@ spec:
       labels:
         app: {{ .Chart.Name }}
     spec:
+      volumes:
+        - name: realm-json
+          configMap:
+            name: {{ .Chart.Name }}-env
+            items:
+              - key: realm.json
+                path: realm.json
       containers:
       - name: keycloak
         image: "{{ .Values.image }}"
+        resources:
+          requests:
+            memory: {{ .Values.memoryRequest }}
+            cpu: {{ .Values.cpuRequest }}
+        volumeMounts:
+          - name: realm-json
+            mountPath: /opt/bitnami/keycloak/data/import/realm.json
+            subPath: realm.json
         env:
           - name: KEYCLOAK_FRONTEND_URL
-            value: https://keycloak.local/admin/master
+            value: {{ .Values.frontendUrl | quote }}
           - name: PROXY_ADDRESS_FORWARDING
             value: "true"
           - name: DB_VENDOR
             value: postgres
+          - name: KEYCLOAK_EXTRA_ARGS
+            value: "-Dkeycloak.import=/opt/bitnami/keycloak/data/import/realm.json"
           - name: DB_ADDR
             value: {{ .Values.postgresqlHost | quote }}
           - name: DB_DATABASE

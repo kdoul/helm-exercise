@@ -6,3 +6,5 @@ persistence:
   storageClass: ""
   accessMode: "ReadWriteOnce"
   size: "1Gi"
+cpuRequest: 100m
+memoryRequest: 100Mi

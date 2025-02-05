@@ -14,8 +14,18 @@ spec:
       labels:
         app: {{ .Chart.Name }}
     spec:
+      volumes:
+        {{- if .Values.persistence.enabled }}
+        - name: {{ .Chart.Name }}
+          persistentVolumeClaim:
+            claimName: {{ .Chart.Name }}-data
+        {{- end }}
       containers:
       - name: postgresql
+        resources:
+          requests:
+            memory: {{ .Values.memoryRequest }}
+            cpu: {{ .Values.cpuRequest }}
         image: "{{ .Values.image }}"
         env:
           - name: POSTGRES_USER
@@ -48,6 +58,6 @@ spec:
           periodSeconds: 10
         volumeMounts:
           {{- if .Values.persistence.enabled }}
-          - name: data
+          - name: {{ .Chart.Name }}
             mountPath: /bitnami/postgresql
           {{- end }}

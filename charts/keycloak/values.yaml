@@ -1,7 +1,11 @@
 image: "bitnami/keycloak:latest"
 secretName: "keycloak-secret"
+frontendUrl: "https://keycloak.local/admin/master/console"
 replicaCount: 1
 ingress:
   enabled: true
   hostname: "keycloak.local"
 postgresqlHost: "postgres.local"
+realmFile: "config/realm.json"
+cpuRequest: 100m
+memoryRequest: 100Mi

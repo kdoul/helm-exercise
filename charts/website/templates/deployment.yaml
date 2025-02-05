@@ -29,7 +29,10 @@ spec:
           - name: environment-ts
             mountPath: /usr/src/app/src/environments/environment.ts
             subPath: environment.ts
-
+        resources:
+          requests:
+            memory: {{ .Values.memoryRequest }}
+            cpu: {{ .Values.cpuRequest }}
         env:
         {{- range $key, $value := .Values.extraEnv }}
           - name: {{ $key }}

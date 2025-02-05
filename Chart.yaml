@@ -1,4 +1,21 @@
 apiVersion: v2
 name: helm-exercise
 description: "Umbrella chart deploying Keycloak, PostgreSQL, PGAdmin, and an Angular Website"
-version: 1.2.0
+version: 1.0.0
+
+dependencies:
+  - name: keycloak
+    condition: keycloak.enabled
+    version: 1.0.0
+
+  - name: pgadmin
+    condition: pgadmin.enabled
+    version: 1.0.0
+
+  - name: postgresql
+    condition: postgresql.enabled
+    version: 1.0.0
+
+  - name: website
+    condition: website.enabled
+    version: 1.0.0

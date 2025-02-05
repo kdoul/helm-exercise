@@ -3,7 +3,8 @@ replicaCount: 1
 ingress:
   enabled: true
   hostname: "website.local"
-
+cpuRequest: 100m
+memoryRequest: 100Mi
 environmentTs: |
   export const environment = {
     production: true,
