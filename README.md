@@ -107,13 +107,13 @@ postgresql:
 ```yaml
 website:
   environmentTs: |
-	export const environment = {
-	  production: false,
-	  auth: {
-		authority: 'http://keycloak.local/realms/node',
-		clientId: 'dataspace-admin',
-	  },
-	};
+   export const environment = {
+   production: false,
+    auth: {
+     authority: 'http://keycloak.local/realms/node',
+     clientId: 'dataspace-admin',
+     },
+   };
 ```
 * Override it at install time:
 ```yaml
