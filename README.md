@@ -1,4 +1,4 @@
-# Umbrella Helm Chart
+# Helm Exercise 
 
 This Helm chart deploys four main components into a Kubernetes cluster:
 
@@ -12,8 +12,10 @@ This Helm chart deploys four main components into a Kubernetes cluster:
 ## Architecture
 
 1. **Keycloak** connects to **PostgreSQL** using credentials from a shared secret (e.g., `DB_ADDR`, `DB_USER`, `DB_PASSWORD`).  
-2. **PGAdmin** can manage that same **PostgreSQL** instance, and it has been pre-configured to access it.  
-3. **Angular Website** is a simple app that authenticates against **Keycloak**.
+2. **PGAdmin** can manage that same **PostgreSQL** instance, and it has been pre-configured to access it. The default credentials are also stored in a Kubernetes secret. The default configuration is done through a ConfigMap.  
+3. **Angular Website** is a simple app that authenticates against **Keycloak**. The website's configuration is overwritten using a Kubernetes ConfigMap. 
+
+There is optional persistency for the PostgreSQL database, using a Kubernetes Persistent Volume Claim. 
 
 ---
 
@@ -66,7 +68,7 @@ Then, select the checkbox "7 Clients" and from the dropdown select "Skip" before
 If all goes well, you will see the import success window. You can now close this window. 
  <img width="1518" alt="Screenshot 2025-02-06 at 00 20 25" src="https://github.com/user-attachments/assets/d3387580-0dfb-47b4-9864-ff2933afcb13" />
 
- Now, you can login to the website using the default user. First, navigate to https://website.local/ which should immediately redirect you to the Keycloak sign-in page.
+ Now, you can log in to the website using the default user. First, navigate to https://website.local/ which should immediately redirect you to the Keycloak sign-in page.
  <img width="1201" alt="Screenshot 2025-02-06 at 00 22 07" src="https://github.com/user-attachments/assets/e3a3c51c-64f0-4d06-960c-f910ba44b93b" />
 Then, you should see this window with the note: isAuthenticated: true. 
  <img width="1201" alt="Screenshot 2025-02-06 at 00 22 13" src="https://github.com/user-attachments/assets/ed8444aa-e00e-41f9-ad57-fb4828092ad2" />
@@ -125,15 +127,15 @@ postgresql:
 
 ### PGAdmin
 * Chart: charts/pgadmin/
-* Manual connection to the same Postgres server:
-	1. Go to http://pgadmin.local
-	2. Login with the credentials in pgadmin  (e.g., admin@example.com / adminpassword)
-	3. Add a new server, specifying:
-* Host: postgresql.default.svc.cluster.local (internal Kube DNS)
-* Port: 5432
-* Username: keycloak
-* Password: defaultPassword
-* Database: keycloakdb
+* Default credentials:
+ ```
+ username: admin@example.com
+ password: adminpassword
+ ```
+* The connection to the database should be already configured under Server Group 1 > PostgreSQL1
+  <img width="468" alt="Screenshot 2025-02-06 at 01 27 02" src="https://github.com/user-attachments/assets/115062e3-eba8-4779-8334-049b0447e432" />
+* The default database password is: `defaultPassword`
+* The default keycloak database is: keycloakdb
 
 ### Angular Website
 * Chart: charts/website/
@@ -153,8 +155,11 @@ website:
 * The file is mounted into /app/src/environments/environment.ts before the container runs npm start.
 
 You can override any of the configuration by editing the values.yaml file, providing your own values file and passing it to helm
-` helm upgrade --install my-app . --values custom.yaml`
+
+`helm upgrade --install my-app . --values custom.yaml`
+
 or by passing overrides directly to the command line
+
 `helm upgrade --install my-app . --values values.yaml --set keycloak.replicaCount=2`
 
 ## Accessing Services
@@ -189,7 +194,7 @@ helm uninstall my-app
 ```
 This removes all Pods, Services, Ingress, etc. If persistence was enabled, you may also have to manually remove any leftover PVCs (PersistentVolumeClaims).
 
-##Summary
-* Keycloak + PostgreSQL for identity/data storage
-* PGAdmin for manual DB management of the same Postgres instance
-* Angular Website with a runtime-override of environment.ts (no need to rebuild the Docker image for different Keycloak realms/URLs)
+## Potential Improvements
+* Make the database deployment into a statefulset.
+* Add certmanager to automate the issuance and renewal of certificates. 
+* Add metrics server and automatic scaling based on load using HPA. 
