@@ -42,13 +42,13 @@ Clone the web app git repository and build the Docker image:
 3. **Install with Helm:**  
 
    ```bash
-   helm upgrade --install my-app ./my-umbrella-chart
+   helm upgrade --install my-app .
    ```
 
 By default, the following will happen:
-	* Keycloak (with admin credentials from values.yaml) is connected to PostgreSQL (using the same secret-based credentials).
-	* PGAdmin is available for managing the same PostgreSQL instance.
-	* Website starts up and is available to log in. 
+ * Keycloak (with admin credentials from values.yaml) is connected to PostgreSQL (using the same secret-based credentials).
+ * PGAdmin is available for managing the same PostgreSQL instance.
+ * Website starts up and is available to log in. 
  4. **Import client configuration to Keycloak**
  Before logging in to the application, you need to import the client configuration for the angular website. 
  First, navigate to https://keycloak.local and accept the self-signed certificate. 
@@ -92,11 +92,11 @@ In values.yaml, you’ll find:
 ```yaml
 globalDatabase:
   username: "keycloak"
-  password: "keycloakpassword"
+  password: "defaultPassword"
   database: "keycloakdb"
 ```
 
-These are stored in a Kubernetes Secret named <release>-db-secret. Keycloak reads them at startup to connect to PostgreSQL.
+These are stored in a Kubernetes Secret named `database-credentials`. Keycloak reads them at startup to connect to PostgreSQL.
 
 ### Keycloak
 * Chart: charts/keycloak/
@@ -104,7 +104,7 @@ These are stored in a Kubernetes Secret named <release>-db-secret. Keycloak read
 ```yaml
 keycloak:
   image: "bitnami/keycloak:latest"
-  postgresqlHost: "my-umbrella-chart-postgresql"
+  postgresqlHost: "postgresql.default.svc.cluster.local"
   auth:
    adminUser: "admin"
    adminPassword: "adminpassword"
@@ -129,11 +129,11 @@ postgresql:
 	1. Go to http://pgadmin.local
 	2. Login with the credentials in pgadmin  (e.g., admin@example.com / adminpassword)
 	3. Add a new server, specifying:
-* Host: my-umbrella-chart-postgresql (or <release>-postgresql)
+* Host: postgresql.default.svc.cluster.local (internal Kube DNS)
 * Port: 5432
 * Username: keycloak
-* Password: keycloakpassword
-* Database: keycloakdb (optional)
+* Password: defaultPassword
+* Database: keycloakdb
 
 ### Angular Website
 * Chart: charts/website/
@@ -145,16 +145,17 @@ website:
    production: false,
     auth: {
      authority: 'http://keycloak.local/realms/node',
-     clientId: 'dataspace-admin',
+     clientId: 'angular',
      },
    };
 ```
-* Override it at install time:
-```yaml
-helm upgrade --install my-app ./my-umbrella-chart \
-  --set-file website.environmentTs=./my-environment.ts
-```
+
 * The file is mounted into /app/src/environments/environment.ts before the container runs npm start.
+
+You can override any of the configuration by editing the values.yaml file, providing your own values file and passing it to helm
+` helm upgrade --install my-app . --values custom.yaml`
+or by passing overrides directly to the command line
+`helm upgrade --install my-app . --values values.yaml --set keycloak.replicaCount=2`
 
 ## Accessing Services
 1. Ingress Hostnames: By default:
