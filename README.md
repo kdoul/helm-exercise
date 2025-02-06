@@ -173,7 +173,8 @@ or by passing overrides directly to the command line
 <MINIKUBE_IP>  pgadmin.local
 <MINIKUBE_IP>  website.local
 ```
-(Replace <MINIKUBE_IP> with the IP from minikube ip or similar.)
+(Replace <MINIKUBE_IP> with the IP from minikube ip or similar.) 
+Make sure to run `minikube tunnel` if using minikube. 
 
 3. Visit:
 	* Keycloak: https://keycloak.local
