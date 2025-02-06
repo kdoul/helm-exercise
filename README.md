@@ -133,6 +133,7 @@ postgresql:
  password: adminpassword
  ```
 * The connection to the database should be already configured under Server Group 1 > PostgreSQL1
+  
   <img width="468" alt="Screenshot 2025-02-06 at 01 27 02" src="https://github.com/user-attachments/assets/115062e3-eba8-4779-8334-049b0447e432" />
 * The default database password is: `defaultPassword`
 * The default keycloak database is: keycloakdb
